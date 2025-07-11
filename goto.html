@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LostFolder Access 🔒</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 30px;
+        }
+
+        .site-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ff4444;
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .headline {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .headline .highlight {
+            color: #ff4444;
+            text-shadow: 0 0 5px rgba(255, 68, 68, 0.7);
+        }
+
+        .subheadline {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-bottom: 20px;
+        }
+
+        .subheadline .urgent {
+            color: #ff6b35;
+            font-weight: bold;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Vault Status */
+        .vault-status {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .vault-active {
+            color: #00ff00;
+            font-weight: bold;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        /* Countdown Timer */
+        .countdown-section {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid #ff6b35;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .countdown-title {
+            font-size: 1.3rem;
+            color: #ff6b35;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .countdown-timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-family: 'Courier New', monospace;
+        }
+
+        /* File List */
+        .file-list-section {
+            margin-bottom: 40px;
+        }
+
+        .file-list-title {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+
+        .file-list {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: 10px;
+        }
+
+        .file-name {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .file-size {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .file-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Unlock Button */
+        .unlock-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .unlock-btn {
+            background: linear-gradient(45deg, #0088cc, #0066aa);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
+            font-family: 'Courier New', monospace;
+        }
+
+        .unlock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.5);
+            background: linear-gradient(45deg, #0099dd, #0077bb);
+        }
+
+        .unlock-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Verification Modal */
+        .verification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .verification-modal {
+            background: #111;
+            border: 2px solid #ff4444;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .verification-text {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ff6b35);
+            width: 0%;
+            animation: loading 3s ease-in-out forwards;
+        }
+
+        /* Last Access Section */
+        .last-access-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .last-access-title {
+            font-size: 1.2rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 8px;
+        }
+
+        .access-log {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .access-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .access-item:last-child {
+            border-bottom: none;
+        }
+
+        .access-status {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .access-text {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        .access-granted {
+            color: #00ff00;
+        }
+
+        .access-denied {
+            color: #ff4444;
+        }
+
+        /* Animations */
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255, 68, 68, 0.5); }
+            to { text-shadow: 0 0 20px rgba(255, 68, 68, 0.8), 0 0 30px rgba(255, 68, 68, 0.6); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .site-title {
+                font-size: 2rem;
+            }
+
+            .headline {
+                font-size: 1.4rem;
+            }
+
+            .subheadline {
+                font-size: 1rem;
+            }
+
+            .countdown-timer {
+                font-size: 2rem;
+            }
+
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .unlock-btn {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+
+            .verification-modal {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .site-title {
+                font-size: 1.8rem;
+            }
+
+            .headline {
+                font-size: 1.2rem;
+            }
+
+            .countdown-timer {
+                font-size: 1.8rem;
+            }
+
+            .unlock-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .access-log::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .access-log::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .access-log::-webkit-scrollbar-thumb {
+            background: #ff4444;
+            border-radius: 3px;
+        }
+
+        .access-log::-webkit-scrollbar-thumb:hover {
+            background: #ff6666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="site-title">LostFolder Access 🔒</h1>
+            <h2 class="headline">This folder was <span class="highlight">deleted 3 times</span>. One copy survived.</h2>
+            <p class="subheadline">⏳ This vault access will expire in <span class="urgent">24h</span> — Download access is restricted.</p>
+        </div>
+
+        <!-- Vault Status -->
+        <div class="vault-status">
+            <div class="vault-active">🟢 VAULT ACTIVE</div>
+            <div>Secure connection established</div>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="countdown-section">
+            <div class="countdown-title">⏰ ACCESS EXPIRES IN:</div>
+            <div class="countdown-timer" id="countdown">13:46:32</div>
+        </div>
+
+        <!-- File List -->
+        <div class="file-list-section">
+            <h3 class="file-list-title">📂 Available Files</h3>
+            <div class="file-list">
+                <div class="file-item">
+                    <div>
+                        <span class="file-icon">📁</span>
+                        <span class="file-name">Pack001_LatinasDad.zip</span>
+                    </div>
+                    <span class="file-size">[1.3GB]</span>
+                </div>
+                <div class="file-item">
+                    <div>
+                        <span class="file-icon">📁</span>
+                        <span class="file-name">ICT_BrazilianDrop.mp4</span>
+                    </div>
+                    <span class="file-size">[796MB]</span>
+                </div>
+                <div class="file-item">
+                    <div>
+                        <span class="file-icon">📁</span>
+                        <span class="file-name">StepSister_PremiumPack.rar</span>
+                    </div>
+                    <span class="file-size">[2.1GB]</span>
+                </div>
+                <div class="file-item">
+                    <div>
+                        <span class="file-icon">📁</span>
+                        <span class="file-name">Forbidden_MomSon_Leak.7z</span>
+                    </div>
+                    <span class="file-size">[1.7GB]</span>
+                </div>
+                <div class="file-item">
+                    <div>
+                        <span class="file-icon">📁</span>
+                        <span class="file-name">Secret_Collection_2024.zip</span>
+                    </div>
+                    <span class="file-size">[3.2GB]</span>
+                </div>
+                <div class="file-item">
+                    <div>
+                        <span class="file-icon">📁</span>
+                        <span class="file-name">Exclusive_Premium_Content.rar</span>
+                    </div>
+                    <span class="file-size">[1.9GB]</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unlock Button -->
+        <div class="unlock-section">
+            <button class="unlock-btn" id="unlockBtn" onclick="startVerification()">
+                UNLOCK HIDDEN VAULT 🔓
+            </button>
+        </div>
+
+        <!-- Last Access Section -->
+        <div class="last-access-section">
+            <h3 class="last-access-title">🔍 Recent Vault Activity</h3>
+            <div class="access-log" id="accessLog">
+                <!-- Access items will be added here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Modal -->
+    <div class="verification-overlay" id="verificationOverlay">
+        <div class="verification-modal">
+            <div class="verification-text">Verifying file availability...</div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div style="color: #888; font-size: 0.9rem;">Please wait while we secure your connection</div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let countdownInterval;
+        let accessLogInterval;
+        let timeLeft = 13 * 3600 + 46 * 60 + 32; // 13:46:32 in seconds
+
+        // Sample access log data
+        const accessLogData = [
+            { status: 'granted', user: 'user_8392', action: 'accessed', time: '2 mins ago' },
+            { status: 'granted', user: 'user_Premium421', action: 'joined vault', time: '4 mins ago' },
+            { status: 'denied', user: 'user_Xfiles92', action: 'was denied access', time: '6 mins ago' },
+            { status: 'granted', user: 'user_VIP777', action: 'downloaded files', time: '8 mins ago' },
+            { status: 'granted', user: 'user_Anonymous', action: 'accessed', time: '11 mins ago' },
+            { status: 'denied', user: 'user_Guest123', action: 'was denied access', time: '13 mins ago' },
+            { status: 'granted', user: 'user_Elite99', action: 'joined vault', time: '15 mins ago' },
+            { status: 'granted', user: 'user_Secure456', action: 'accessed', time: '18 mins ago' }
+        ];
+
+        // Additional random users for variety
+        const randomUsers = [
+            'user_Shadow88', 'user_Phantom', 'user_Ghost777', 'user_Ninja123', 'user_Stealth99',
+            'user_Dark456', 'user_Void333', 'user_Cipher', 'user_Matrix', 'user_Binary01'
+        ];
+
+        const randomActions = [
+            'accessed', 'joined vault', 'downloaded files', 'was denied access', 'left vault'
+        ];
+
+        // Initialize the app
+        function init() {
+            startCountdown();
+            initializeAccessLog();
+            startAccessLogUpdates();
+        }
+
+        // Countdown timer function
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            
+            countdownInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    countdownElement.textContent = "EXPIRED";
+                    countdownElement.style.color = "#ff4444";
+                    document.getElementById('unlockBtn').disabled = true;
+                    document.getElementById('unlockBtn').textContent = "ACCESS EXPIRED ❌";
+                    clearInterval(countdownInterval);
+                    return;
+                }
+
+                const hours = Math.floor(timeLeft / 3600);
+                const minutes = Math.floor((timeLeft % 3600) / 60);
+                const seconds = timeLeft % 60;
+
+                countdownElement.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Initialize access log with initial data
+        function initializeAccessLog() {
+            const accessLog = document.getElementById('accessLog');
+            
+            accessLogData.forEach((item, index) => {
+                setTimeout(() => {
+                    addAccessLogItem(item.status, item.user, item.action, item.time);
+                }, index * 200);
+            });
+        }
+
+        // Add new access log item
+        function addAccessLogItem(status, user, action, time) {
+            const accessLog = document.getElementById('accessLog');
+            const accessItem = document.createElement('div');
+            accessItem.className = 'access-item';
+            
+            const statusIcon = status === 'granted' ? '🟢' : '🔴';
+            const statusClass = status === 'granted' ? 'access-granted' : 'access-denied';
+            
+            accessItem.innerHTML = `
+                <span class="access-status">${statusIcon}</span>
+                <span class="access-text ${statusClass}">${user} ${action} ${time}</span>
+            `;
+            
+            accessLog.appendChild(accessItem);
+            
+            // Remove old items if too many
+            if (accessLog.children.length > 8) {
+                const firstItem = accessLog.firstChild;
+                firstItem.style.opacity = '0';
+                firstItem.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    if (accessLog.contains(firstItem)) {
+                        accessLog.removeChild(firstItem);
+                    }
+                }, 300);
+            }
+            
+            // Scroll to bottom
+            accessLog.scrollTop = accessLog.scrollHeight;
+        }
+
+        // Start automatic access log updates
+        function startAccessLogUpdates() {
+            accessLogInterval = setInterval(() => {
+                const randomUser = randomUsers[Math.floor(Math.random() * randomUsers.length)];
+                const randomAction = randomActions[Math.floor(Math.random() * randomActions.length)];
+                const status = randomAction === 'was denied access' ? 'denied' : 'granted';
+                const time = 'just now';
+                
+                addAccessLogItem(status, randomUser, randomAction, time);
+            }, 3000 + Math.random() * 4000); // Random interval between 3-7 seconds
+        }
+
+        // Start verification process
+        function startVerification() {
+            const overlay = document.getElementById('verificationOverlay');
+            const btn = document.getElementById('unlockBtn');
+            
+            // Disable button and show overlay
+            btn.disabled = true;
+            overlay.style.display = 'flex';
+            
+            // After 3 seconds, redirect to external link
+            setTimeout(() => {
+                // Replace '#' with your actual external link
+                window.open('#', '_blank');
+                
+                // Hide overlay and re-enable button
+                overlay.style.display = 'none';
+                btn.disabled = false;
+            }, 3000);
+        }
+
+        // Prevent right-click for more immersive experience
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+
+        // Add some keyboard shortcuts for testing
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                // Close verification modal if open
+                document.getElementById('verificationOverlay').style.display = 'none';
+                document.getElementById('unlockBtn').disabled = false;
+            }
+        });
+
+        // Start the app when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
+
